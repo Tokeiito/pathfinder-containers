@@ -84,7 +84,6 @@ services:
       - ./static/crontab.txt:/var/crontab.txt
       - ./static/pathfinder/routes.ini:/var/www/html/pathfinder/app/routes.ini
       - ./static/pathfinder/environment.ini:/var/www/html/pathfinder/app/templateEnvironment.ini
-      - ./static/entrypoint.sh:/entrypoint.sh
     depends_on:
       - pfdb
       - pf-redis

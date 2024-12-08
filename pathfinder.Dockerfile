@@ -36,6 +36,8 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 # we need to create sites_enabled directory in order for entrypoint.sh being able to copy file after envsubst
 RUN mkdir -p /etc/nginx/sites_enabled/
 
+COPY ./static/entrypoint.sh /entrypoint.sh
+
 WORKDIR /var/www/html
 COPY  --chown=nobody --from=build /app  pathfinder
 
