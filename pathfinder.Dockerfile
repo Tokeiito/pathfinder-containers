@@ -1,11 +1,15 @@
-FROM php:7.2.34-fpm-alpine3.12 as build
+FROM php:7.4-fpm-alpine as build
 
-RUN apk update \
-    && apk add --no-cache libpng-dev  zeromq-dev git \
-    $PHPIZE_DEPS \
-    && docker-php-ext-install gd && docker-php-ext-install pdo_mysql && \
-    pecl install redis && docker-php-ext-enable redis && \
-    pecl install channel://pecl.php.net/zmq-1.1.3 && docker-php-ext-enable zmq && \
+# Install dependencies
+RUN apk add --no-cache \
+    libpng-dev \
+    zeromq-dev \
+    git \
+    bash \
+    $PHPIZE_DEPS && \
+    docker-php-ext-install \
+    gd \
+    pdo_mysql && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY pathfinder /app
@@ -14,7 +18,9 @@ WORKDIR /app
 RUN composer self-update 2.1.8
 RUN composer install
 
-FROM trafex/alpine-nginx-php7:ba1dd422
+FROM trafex/alpine-nginx-php7:latest
+
+USER root
 
 RUN apk update && apk add --no-cache busybox-suid sudo php7-redis php7-pdo php7-pdo_mysql \
     php7-fileinfo php7-event shadow gettext bash apache2-utils logrotate ca-certificates
