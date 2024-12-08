@@ -2,9 +2,11 @@ version: "3.9"
 
 services:
   pfdb:
-    image: bianjp/mariadb-alpine:latest
+    image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+      MARIADB_USER: pf
+      MARIADB_PASSWORD: $MYSQL_PASSWORD
     networks:
       pf:
         aliases:
