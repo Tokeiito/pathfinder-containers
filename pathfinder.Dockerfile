@@ -39,9 +39,7 @@ RUN mkdir -p /etc/nginx/sites_enabled/
 WORKDIR /var/www/html
 COPY  --chown=nobody --from=build /app  pathfinder
 
-RUN chmod 0766 pathfinder/logs pathfinder/tmp/ 
-RUN rm index.php && touch /etc/nginx/.setup_pass 
-# RUN chmod +x /entrypoint.sh
+RUN chmod 0766 pathfinder/logs pathfinder/tmp/ && rm index.php && touch /etc/nginx/.setup_pass && chmod +x /entrypoint.sh
 
 WORKDIR /var/www/html
 EXPOSE 80
