@@ -18,7 +18,7 @@ WORKDIR /app
 RUN composer self-update 2.1.8
 RUN composer install
 
-FROM trafex/alpine-nginx-php7:latest
+FROM trafex/alpine-nginx-php7:1.10.0
 
 USER root
 
@@ -33,28 +33,15 @@ RUN sed -i '/^mozilla\/DST_Root_CA_X3.crt$/ s/^/!/' /etc/ca-certificates.conf \
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
  && ln -sf /dev/stderr /var/log/nginx/error.log
 
-COPY static/logrotate/pathfinder /etc/logrotate.d/pathfinder
-COPY static/nginx/nginx.conf /etc/nginx/templateNginx.conf
 # we need to create sites_enabled directory in order for entrypoint.sh being able to copy file after envsubst
 RUN mkdir -p /etc/nginx/sites_enabled/
-COPY static/nginx/site.conf  /etc/nginx/templateSite.conf
-
-# Configure PHP-FPM
-COPY static/php/fpm-pool.conf /etc/php7/php-fpm.d/zzz_custom.conf
-
-COPY static/php/php.ini /etc/zzz_custom.ini
-# configure cron
-COPY static/crontab.txt /var/crontab.txt
-# Configure supervisord
-COPY static/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY static/entrypoint.sh   /
 
 WORKDIR /var/www/html
 COPY  --chown=nobody --from=build /app  pathfinder
 
-RUN chmod 0766 pathfinder/logs pathfinder/tmp/ && rm index.php && touch /etc/nginx/.setup_pass &&  chmod +x /entrypoint.sh
-COPY static/pathfinder/routes.ini /var/www/html/pathfinder/app/
-COPY static/pathfinder/environment.ini /var/www/html/pathfinder/app/templateEnvironment.ini
+RUN chmod 0766 pathfinder/logs pathfinder/tmp/ 
+RUN rm index.php && touch /etc/nginx/.setup_pass 
+# RUN chmod +x /entrypoint.sh
 
 WORKDIR /var/www/html
 EXPOSE 80

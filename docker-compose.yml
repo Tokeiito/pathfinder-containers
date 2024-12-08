@@ -41,8 +41,7 @@ services:
     volumes:
       - ./logs:/var/www/html/pathfinder/history/map
       - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-
+      - /etc/localtime:/etc/localtime:ro      
     restart: always
   pf:
     container_name: pathfinder
@@ -76,6 +75,16 @@ services:
       - ./logs:/var/www/html/pathfinder/history/map
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - ./static/logrotate/pathfinder:/etc/logrotate.d/pathfinder
+      - ./static/nginx/nginx.conf:/etc/nginx/templateNginx.conf
+      - ./static/nginx/site.conf:/etc/nginx/templateSite.conf
+      - ./static/php/php.ini:/etc/zzz_custom.ini
+      - ./static/php/fpm-pool.conf:/etc/php7/php-fpm.d/zzz_custom.conf
+      - ./static/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./static/crontab.txt:/var/crontab.txt
+      - ./static/pathfinder/routes.ini:/var/www/html/pathfinder/app/routes.ini
+      - ./static/pathfinder/environment.ini:/var/www/html/pathfinder/app/templateEnvironment.ini
+      - ./static/entrypoint.sh:/entrypoint.sh
     depends_on:
       - pfdb
       - pf-redis
